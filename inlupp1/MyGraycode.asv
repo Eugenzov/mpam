@@ -1,0 +1,30 @@
+function [bitStream] = MyGraycode(quantizedSignal,Vp,N)
+
+%% Instruktion
+%Function that uses Gray coded N bits to represent each of the quantization levels.
+% Returns a vector of length N · Ns containing the bits representing these values,
+
+%% 
+Ns=length(quantizedSignal); % längden av qvantiserad signal
+quantLevels = 2.^ N ;
+qTarget= linspace(-Vp, Vp, quantLevels); 
+encoder=zeros(2.^N, N);
+for i = 0:quantLevels-1
+    encoder(i+1, :) = bitget(bitxor(i, bitshift(i, -1)), N:-1:1);
+end 
+
+bitStream = [];
+   
+for i = 1:Ns
+ % Find the index of the control value that matches the current signal element
+ controlIndex = find(qTarget ==quantizedSignal(i));
+ %[~, controlIndex] = ismember(signal(i), qTarget);
+        row = encoder(controlIndex, :);
+        bitStream = [bitStream, row];
+end 
+
+end
+
+
+
+
